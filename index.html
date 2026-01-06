@@ -9,36 +9,157 @@
 
 <body class="bg-gray-50 text-gray-800">
   <main class="min-h-screen p-6 md:p-12">
-    <!-- ... your sections ... -->
 
+    <!-- HERO -->
+    <section class="max-w-4xl mx-auto text-center space-y-6">
+      <h1 class="text-4xl font-bold">
+        A workout plan built for your goals and schedule
+      </h1>
+
+      <p class="text-lg text-gray-600">
+        Tell us your goal and equipment. We’ll create a personalized AI fitness plan and send it to you within 24 hours.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="#planForm" class="inline-block px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700">
+          Get my free plan
+        </a>
+        <a href="#what-you-get" class="inline-block px-6 py-3 border border-gray-300 text-gray-800 rounded-lg hover:bg-gray-100">
+          See what’s included
+        </a>
+      </div>
+
+      <p class="text-sm text-gray-500">
+        No spam. We only use your submission to generate your plan.
+      </p>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="max-w-5xl mx-auto mt-16 grid gap-8 md:grid-cols-3">
+      <div class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold">Personalized Training</h2>
+        <p class="mt-2 text-gray-600">
+          Built around your goals, schedule, and available equipment.
+        </p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold">Fast Turnaround</h2>
+        <p class="mt-2 text-gray-600">
+          Most plans are delivered within 24 hours.
+        </p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold">AI + Human Review</h2>
+        <p class="mt-2 text-gray-600">
+          AI-generated structure reviewed for clarity and safety.
+        </p>
+      </div>
+    </section>
+
+    <!-- WHAT YOU GET -->
+    <section id="what-you-get" class="max-w-5xl mx-auto mt-16 bg-white p-8 rounded-xl shadow">
+      <h2 class="text-2xl font-bold">What you’ll receive</h2>
+      <ul class="mt-4 grid gap-3 md:grid-cols-2 text-gray-700">
+        <li>• Weekly workout schedule based on your goal</li>
+        <li>• Exercise list with sets and reps</li>
+        <li>• Progression guidance to keep improving</li>
+        <li>• Equipment-based substitutions (home or gym)</li>
+      </ul>
+      <p class="mt-4 text-sm text-gray-500">
+        Delivery is typically within 24 hours. Check inbox and spam or promotions folders.
+      </p>
+    </section>
+
+    <!-- FORM -->
     <section class="max-w-3xl mx-auto mt-20">
-      <h2 class="text-2xl font-bold text-center mb-6">Request Your Free AI Fitness Plan</h2>
+      <h2 class="text-2xl font-bold text-center mb-6">
+        Request your free AI fitness plan
+      </h2>
 
-      <form id="planForm"
+      <form
+        id="planForm"
         action="https://formsubmit.co/demetrisn2018@gmail.com"
         method="POST"
-        class="bg-white p-6 rounded-xl shadow space-y-4"
+        class="scroll-mt-24 bg-white p-6 rounded-xl shadow space-y-4"
       >
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_subject" value="New FitFlow AI Plan Request">
         <input type="hidden" name="_template" value="table">
 
-        <input required type="text" name="goal" placeholder="Fitness Goal (fat loss, muscle, etc)" class="w-full border p-2 rounded">
-        <input required type="text" name="experience" placeholder="Experience Level (beginner, intermediate)" class="w-full border p-2 rounded">
-        <textarea name="equipment" placeholder="Equipment Available (gym, dumbbells, none)" class="w-full border p-2 rounded"></textarea>
-        <textarea name="notes" placeholder="Injuries or special notes" class="w-full border p-2 rounded"></textarea>
+        <input
+          required
+          type="text"
+          name="goal"
+          placeholder="Fitness goal (fat loss, muscle gain, etc.)"
+          class="w-full border p-2 rounded"
+        >
 
-        <button class="w-full bg-green-600 text-white py-2 rounded font-semibold hover:bg-green-700">
-          Get My Plan →
+        <input
+          required
+          type="text"
+          name="experience"
+          placeholder="Experience level (beginner, intermediate, advanced)"
+          class="w-full border p-2 rounded"
+        >
+
+        <textarea
+          name="equipment"
+          placeholder="Equipment available (gym, dumbbells, none)"
+          class="w-full border p-2 rounded"
+        ></textarea>
+
+        <textarea
+          name="notes"
+          placeholder="Injuries or special notes (optional)"
+          class="w-full border p-2 rounded"
+        ></textarea>
+
+        <button
+          class="w-full bg-green-600 text-white py-3 rounded font-semibold hover:bg-green-700"
+        >
+          Get my plan
         </button>
       </form>
     </section>
 
+    <!-- FAQ -->
+    <section class="max-w-5xl mx-auto mt-16">
+      <h2 class="text-2xl font-bold text-center mb-6">FAQ</h2>
+
+      <div class="bg-white rounded-xl shadow divide-y">
+        <div class="p-6">
+          <h3 class="font-semibold">Is this really free?</h3>
+          <p class="mt-2 text-gray-600 text-sm">
+            Yes. You’ll receive a personalized plan based on what you submit.
+          </p>
+        </div>
+        <div class="p-6">
+          <h3 class="font-semibold">When will I receive my plan?</h3>
+          <p class="mt-2 text-gray-600 text-sm">
+            Typically within 24 hours.
+          </p>
+        </div>
+        <div class="p-6">
+          <h3 class="font-semibold">Is this suitable for beginners?</h3>
+          <p class="mt-2 text-gray-600 text-sm">
+            Yes. Plans are adjusted to your experience level.
+          </p>
+        </div>
+        <div class="p-6">
+          <h3 class="font-semibold">What if I have injuries?</h3>
+          <p class="mt-2 text-gray-600 text-sm">
+            Include them in the form and we’ll suggest safer alternatives.
+          </p>
+        </div>
+      </div>
+    </section>
+
     <footer class="text-center mt-20 text-sm text-gray-500">
-      © 2025 FitFlow AI
+      © 2025 FitFlow AI • Privacy-first • Your info is only used to generate your plan
     </footer>
   </main>
 
+  <!-- CLIENT-SIDE FORM SUBMIT + REDIRECT -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const form = document.getElementById("planForm");
@@ -49,16 +170,15 @@
         const formData = new FormData(form);
 
         try {
-          const res = await fetch(form.action, {
+          await fetch(form.action, {
             method: "POST",
             body: formData,
             headers: { "Accept": "application/json" }
           });
 
-          // Even if FormSubmit returns something odd, we still route to thank-you
           window.location.href = "./thank-you.html";
-        } catch (err) {
-          alert("Something went wrong submitting the form. Please try again.");
+        } catch (error) {
+          alert("There was an issue submitting the form. Please try again.");
         }
       });
     });
