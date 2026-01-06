@@ -7,6 +7,27 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
+  <script>
+  const form = document.getElementById("planForm");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    // Post to FormSubmit without navigating away
+    await fetch(form.action, {
+      method: "POST",
+      body: formData,
+      headers: { "Accept": "application/json" }
+    });
+
+    // Now redirect within your GitHub Pages project path
+    window.location.href = "./thank-you.html";
+  });
+</script>
+
+
 <body class="bg-gray-50 text-gray-800">
   <main class="min-h-screen p-6 md:p-12">
 
@@ -38,13 +59,15 @@
     <section class="max-w-3xl mx-auto mt-20">
       <h2 class="text-2xl font-bold text-center mb-6">Request Your Free AI Fitness Plan</h2>
 
-      <form 
-        action="https://formsubmit.co/demetrisn2018@gmail.com" 
-        method="POST"
-        class="bg-white p-6 rounded-xl shadow space-y-4"
-      >
+     <form id="planForm"
+  action="https://formsubmit.co/demetrisn2018@gmail.com"
+  method="POST"
+  class="bg-white p-6 rounded-xl shadow space-y-4"
+       >
         <input type="hidden" name="_captcha" value="false">
-<input type="hidden" name="_next" value="thank-you.html">
+        <input type="hidden" name="_next" value="https://demetrisn2018.github.io/fitflow-ai-site/thank-you.html">
+        <input type="hidden" name="_subject" value="New FitFlow AI Plan Request">
+        <input type="hidden" name="_template" value="table">
 
         <input required type="text" name="goal" placeholder="Fitness Goal (fat loss, muscle, etc)" class="w-full border p-2 rounded">
         <input required type="text" name="experience" placeholder="Experience Level (beginner, intermediate)" class="w-full border p-2 rounded">
