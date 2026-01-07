@@ -8,17 +8,16 @@
 </head>
 
 <body class="bg-green-50 min-h-screen flex items-center justify-center p-6">
-  <div class="w-full max-w-2xl bg-white rounded-2xl shadow p-8">
+  <div class="w-full max-w-3xl bg-white rounded-2xl shadow p-8">
 
     <!-- Confirmation -->
     <div class="text-center">
       <h1 class="text-4xl font-bold text-green-700">You’re all set</h1>
       <p class="mt-4 text-lg text-gray-700">
-        Thanks for submitting your details. Your personalized AI fitness plan is being created.
+        Thanks for submitting your details. Your plan preview is below.
       </p>
       <p class="mt-2 text-sm text-gray-500">
-        Delivery is typically within <span class="font-semibold">24 hours</span>.  
-        Please check your inbox and spam or promotions folders.
+        Your request was submitted successfully. Typical follow-up delivery is within <span class="font-semibold">24 hours</span>.
       </p>
     </div>
 
@@ -29,7 +28,7 @@
       </h2>
 
       <p class="mt-2 text-sm text-gray-700">
-        This optional upgrade prioritizes your plan and adds more detail based on your goals and equipment.
+        This optional upgrade prioritizes your plan and adds more detail based on your goal and equipment.
       </p>
 
       <ul class="mt-4 text-sm text-gray-700 space-y-2">
@@ -40,7 +39,7 @@
 
       <!-- REPLACE THIS LINK WITH YOUR STRIPE PAYMENT LINK -->
       <a
-        href="https://buy.stripe.com/xxxxxxxx"
+        href="PASTE_STRIPE_PAYMENT_LINK_HERE"
         class="inline-block mt-5 w-full text-center px-6 py-3 bg-green-700 text-white rounded-lg font-semibold hover:bg-green-800"
       >
         Upgrade for Priority Delivery ($19)
@@ -51,36 +50,28 @@
       </p>
     </div>
 
-    <!-- Recommended Tools -->
-    <div class="mt-8">
-      <h2 class="text-lg font-bold text-gray-900">
-        Recommended while you wait
-      </h2>
-      <p class="mt-2 text-sm text-gray-600">
-        These tools pair well with your fitness plan. Some links may be affiliate links.
-      </p>
+    <!-- Plan Preview -->
+    <div class="mt-10">
+      <h2 class="text-2xl font-bold text-gray-900">Your plan preview</h2>
 
-      <div class="mt-4 grid gap-4 md:grid-cols-3">
-        <a href="#" class="block border rounded-xl p-4 hover:shadow">
-          <div class="font-semibold">Creatine Supplement</div>
-          <div class="text-sm text-gray-600 mt-1">
-            Simple and well-researched performance support
-          </div>
-        </a>
+      <div class="mt-4 bg-gray-50 border rounded-xl p-5">
+        <div class="grid gap-2 md:grid-cols-2 text-sm text-gray-700">
+          <div><span class="font-semibold">Goal:</span> <span id="vGoal"></span></div>
+          <div><span class="font-semibold">Experience:</span> <span id="vExp"></span></div>
+          <div><span class="font-semibold">Days/week:</span> <span id="vDays"></span></div>
+          <div><span class="font-semibold">Equipment:</span> <span id="vEquip"></span></div>
+        </div>
+        <div class="mt-3 text-sm text-gray-700">
+          <span class="font-semibold">Notes:</span>
+          <div id="vNotes" class="mt-1 text-gray-600"></div>
+        </div>
+      </div>
 
-        <a href="#" class="block border rounded-xl p-4 hover:shadow">
-          <div class="font-semibold">Adjustable Dumbbells</div>
-          <div class="text-sm text-gray-600 mt-1">
-            Flexible option for home workouts
-          </div>
-        </a>
+      <div id="planContainer" class="mt-6 space-y-6"></div>
 
-        <a href="#" class="block border rounded-xl p-4 hover:shadow">
-          <div class="font-semibold">Fitness Tracking App</div>
-          <div class="text-sm text-gray-600 mt-1">
-            Helps you stay consistent and accountable
-          </div>
-        </a>
+      <div class="mt-6 text-sm text-gray-600">
+        <p class="font-semibold text-gray-800">Progress rule:</p>
+        <p>Add 1–2 reps when all sets feel controlled. Add a small amount of weight when form stays clean.</p>
       </div>
     </div>
 
@@ -100,11 +91,232 @@
       </a>
     </div>
 
-    <!-- Privacy -->
     <p class="mt-6 text-center text-xs text-gray-500">
       We respect your privacy and only use your information to generate your plan.
     </p>
-
   </div>
-</body>
-</html>
+
+  <script>
+    function safeText(el, value) {
+      el.textContent = value || "";
+    }
+
+    function section(title, items) {
+      const wrap = document.createElement("div");
+      wrap.className = "bg-white border rounded-xl p-5";
+
+      const h = document.createElement("h3");
+      h.className = "text-lg font-bold text-gray-900";
+      h.textContent = title;
+
+      const ul = document.createElement("ul");
+      ul.className = "mt-3 space-y-2 text-sm text-gray-700";
+
+      for (const item of items) {
+        const li = document.createElement("li");
+        li.textContent = item;
+        ul.appendChild(li);
+      }
+
+      wrap.appendChild(h);
+      wrap.appendChild(ul);
+      return wrap;
+    }
+
+    function workoutBlock(title, lines) {
+      const wrap = document.createElement("div");
+      wrap.className = "bg-white border rounded-xl p-5";
+
+      const h = document.createElement("h4");
+      h.className = "text-base font-bold text-gray-900";
+      h.textContent = title;
+
+      const div = document.createElement("div");
+      div.className = "mt-3 space-y-2 text-sm text-gray-700";
+
+      lines.forEach((line) => {
+        const p = document.createElement("p");
+        p.textContent = line;
+        div.appendChild(p);
+      });
+
+      wrap.appendChild(h);
+      wrap.appendChild(div);
+      return wrap;
+    }
+
+    function buildPlan({ goal, experience, days }) {
+      const plan = document.getElementById("planContainer");
+      plan.innerHTML = "";
+
+      // Warm-up
+      plan.appendChild(section("Warm-up (5–7 minutes)", [
+        "2 minutes light cardio (walk/bike/jump rope)",
+        "10 bodyweight squats",
+        "10 hip hinges (RDL pattern)",
+        "10 push-ups (incline if needed)",
+        "10 band pull-aparts or rows"
+      ]));
+
+      // Schedule
+      const d = String(days || "3");
+      let scheduleLines = [];
+      if (d === "4") {
+        scheduleLines = [
+          "Day 1: Upper Body A",
+          "Day 2: Lower Body A",
+          "Day 3: Upper Body B",
+          "Day 4: Lower Body B"
+        ];
+      } else if (d === "5") {
+        scheduleLines = [
+          "Day 1: Upper Body A",
+          "Day 2: Lower Body A",
+          "Day 3: Conditioning + Core",
+          "Day 4: Upper Body B",
+          "Day 5: Lower Body B"
+        ];
+      } else {
+        scheduleLines = [
+          "Day 1: Full Body A",
+          "Day 2: Full Body B",
+          "Day 3: Full Body A (alternate weekly)"
+        ];
+      }
+      plan.appendChild(section("Weekly schedule", scheduleLines));
+
+      // Workouts (Home + Gym combo)
+      const fullBodyA = [
+        "1) Squat pattern — Gym: goblet squat or leg press | Home: goblet squat or squat-to-chair — 3 × 8–12",
+        "2) Horizontal push — Gym: DB bench press | Home: push-ups or DB floor press — 3 × 8–12",
+        "3) Horizontal pull — Gym: seated row or lat pulldown | Home: one-arm DB row or band row — 3 × 10–12",
+        "4) Hip hinge — Gym: DB Romanian deadlift | Home: DB Romanian deadlift or glute bridge — 3 × 8–12",
+        "5) Core — plank or dead bug — 3 × 30–45 sec"
+      ];
+
+      const fullBodyB = [
+        "1) Split squat / lunge — Gym: split squat or hack squat | Home: reverse lunges — 3 × 8–10 per side",
+        "2) Vertical push — Gym: DB overhead press | Home: DB overhead press or pike push-ups — 3 × 8–10",
+        "3) Vertical pull — Gym: lat pulldown | Home: band pulldown or inverted row — 3 × 10–12",
+        "4) Hamstrings / glutes — Gym: hamstring curl | Home: glute bridges or hamstring walkouts — 3 × 10–15",
+        "5) Core — dead bug or side plank — 3 × 8–10 per side"
+      ];
+
+      if (d === "4" || d === "5") {
+        // Upper/Lower split blocks
+        plan.appendChild(workoutBlock("Upper Body A", [
+          "1) DB bench press OR push-ups — 3 × 8–12",
+          "2) Row (cable row / one-arm DB row) — 3 × 10–12",
+          "3) Overhead press — 3 × 8–10",
+          "4) Lat pulldown OR band pulldown — 3 × 10–12",
+          "5) Optional arms: curls + triceps — 2 × 10–12"
+        ]));
+
+        plan.appendChild(workoutBlock("Lower Body A", [
+          "1) Squat (goblet / leg press) — 3 × 8–12",
+          "2) Romanian deadlift (DB) — 3 × 8–12",
+          "3) Split squat / lunge — 3 × 8–10 per side",
+          "4) Hamstring curl OR hamstring walkouts — 3 × 10–15",
+          "5) Core (plank) — 3 × 30–45 sec"
+        ]));
+
+        plan.appendChild(workoutBlock("Upper Body B", [
+          "1) Incline DB press OR push-ups — 3 × 8–12",
+          "2) Row variation — 3 × 10–12",
+          "3) Lateral raises — 2 × 12–15",
+          "4) Pulldown/assisted pull-up OR band pulldown — 3 × 8–12",
+          "5) Core (dead bug) — 3 × 8–10 per side"
+        ]));
+
+        plan.appendChild(workoutBlock("Lower Body B", [
+          "1) Squat variation — 3 × 8–12",
+          "2) Glute bridge / hip thrust — 3 × 10–15",
+          "3) Step-ups OR reverse lunges — 3 × 8–10 per side",
+          "4) Calf raises — 2 × 12–15",
+          "5) Core (side plank) — 3 × 30–45 sec"
+        ]));
+
+        if (d === "5") {
+          plan.appendChild(section("Conditioning + Core (Day 3)", [
+            "Choose one: 20–30 min brisk walking OR 15–25 min bike/elliptical",
+            "Intervals (optional): 30 sec fast / 60 sec easy × 8–10 rounds",
+            "Core finisher: plank 3 × 30–45 sec + dead bug 3 × 8/side"
+          ]));
+        }
+      } else {
+        // 3-day full body
+        plan.appendChild(workoutBlock("Full Body A", fullBodyA));
+        plan.appendChild(workoutBlock("Full Body B", fullBodyB));
+      }
+
+      // Progression
+      plan.appendChild(section("Weekly progression (Weeks 1–4)", [
+        "Week 1: learn movements, stop with ~2 reps left in reserve",
+        "Week 2: add 1–2 reps where possible",
+        "Week 3: add small weight OR add a set to one main lift",
+        "Week 4: maintain weight, focus on clean form and consistency"
+      ]));
+
+      // Conditioning (optional)
+      plan.appendChild(section("Optional conditioning (2×/week)", [
+        "20–30 min brisk walking",
+        "15–25 min cycling or elliptical",
+        "Intervals: 30 sec fast / 60 sec easy × 8–10 rounds"
+      ]));
+
+      // Goal notes
+      const g = (goal || "").toLowerCase();
+      let goalLines = [];
+      if (g.includes("fat")) {
+        goalLines = [
+          "Aim for 7–10k steps per day.",
+          "Prioritize protein and consistent meals.",
+          "Keep workouts steady and recover well."
+        ];
+      } else if (g.includes("muscle")) {
+        goalLines = [
+          "Eat slightly above maintenance.",
+          "Track lifts and aim to progress weekly.",
+          "Prioritize sleep and recovery."
+        ];
+      } else if (g.includes("strength")) {
+        goalLines = [
+          "Use the lower end of rep ranges on main lifts (5–8 where applicable).",
+          "Add weight gradually as form stays clean.",
+          "Keep conditioning moderate so recovery stays high."
+        ];
+      } else {
+        goalLines = [
+          "Consistency beats intensity. Keep sessions sustainable.",
+          "Progress slowly and focus on good form.",
+          "Add walks or light cardio for general health."
+        ];
+      }
+      plan.appendChild(section("Goal notes", goalLines));
+
+      // Experience note (optional)
+      const exp = (experience || "").toLowerCase();
+      if (exp.includes("beginner")) {
+        plan.appendChild(section("Beginner focus", [
+          "Use conservative weights and prioritize technique.",
+          "Rest 60–120 seconds between sets.",
+          "If sore, reduce volume slightly for the first week."
+        ]));
+      } else if (exp.includes("advanced")) {
+        plan.appendChild(section("Advanced focus", [
+          "Aim to push closer to the top of rep ranges with strong form.",
+          "Consider adding 1 extra set to your main lift on 1–2 days/week.",
+          "Keep recovery habits consistent."
+        ]));
+      }
+    }
+
+    // Read params and render
+    const params = new URLSearchParams(window.location.search);
+    const goal = params.get("goal") || "General fitness";
+    const experience = params.get("experience") || "Beginner";
+    const days = params.get("days") || "3";
+    const equipment = params.get("equipment") || "Home + Gym";
+    const notes = params.get("notes") || "None";
+
+    safeText(document.getEle
