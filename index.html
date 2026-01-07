@@ -82,10 +82,17 @@
         method="POST"
         class="scroll-mt-24 bg-white p-6 rounded-xl shadow space-y-4"
       >
+        <!-- FormSubmit settings -->
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_subject" value="New FitFlow AI Plan Request">
         <input type="hidden" name="_template" value="table">
+        <input
+          type="hidden"
+          name="_autoresponse"
+          value="Thanks for requesting your FitFlow AI plan! Your personalized workout plan is being created and will be delivered within 24 hours. If you have any extra notes, just reply to this email."
+        >
 
+        <!-- Fields -->
         <input
           required
           type="text"
@@ -159,7 +166,7 @@
     </footer>
   </main>
 
-  <!-- CLIENT-SIDE FORM SUBMIT + REDIRECT -->
+  <!-- CLIENT-SIDE SUBMIT + REDIRECT -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const form = document.getElementById("planForm");
