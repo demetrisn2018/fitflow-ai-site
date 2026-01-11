@@ -13,62 +13,100 @@
     <!-- HERO -->
     <section class="max-w-4xl mx-auto text-center space-y-6">
       <h1 class="text-4xl font-bold">
-        A workout plan built for your goals and schedule
+        Get a workout plan built around your goal, schedule, and equipment
       </h1>
 
       <p class="text-lg text-gray-600">
-        Fill out the form to see your plan instantly. You’ll also get a short follow-up by email.
+        Submit your details to see a plan preview instantly. If you want it dialed in for faster results (and fewer mistakes),
+        you’ll have an option to upgrade after you submit.
       </p>
 
       <div class="flex flex-col sm:flex-row gap-3 justify-center">
         <a href="#planForm" class="inline-block px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700">
-          Get my free plan
+          Build my plan
         </a>
         <a href="#what-you-get" class="inline-block px-6 py-3 border border-gray-300 text-gray-800 rounded-lg hover:bg-gray-100">
-          See what’s included
+          What you’ll get
         </a>
       </div>
 
       <p class="text-sm text-gray-500">
-        No spam. We only use your submission to generate your plan and send follow-ups. Unsubscribe anytime.
+        No spam. You’ll get your plan preview and a short follow-up sequence. Unsubscribe anytime.
       </p>
     </section>
 
     <!-- FEATURES -->
     <section class="max-w-5xl mx-auto mt-16 grid gap-8 md:grid-cols-3">
       <div class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-xl font-semibold">Personalized Training</h2>
-        <p class="mt-2 text-gray-600">Built around your goal, schedule, and equipment.</p>
+        <h2 class="text-xl font-semibold">Home + Gym Compatible</h2>
+        <p class="mt-2 text-gray-600">
+          Built to work whether you train at home, in the gym, or both.
+        </p>
       </div>
       <div class="bg-white p-6 rounded-xl shadow">
         <h2 class="text-xl font-semibold">Instant Plan Preview</h2>
-        <p class="mt-2 text-gray-600">See a plan immediately on the confirmation page.</p>
+        <p class="mt-2 text-gray-600">
+          See a structured plan immediately after submitting.
+        </p>
       </div>
       <div class="bg-white p-6 rounded-xl shadow">
         <h2 class="text-xl font-semibold">Simple Progression</h2>
-        <p class="mt-2 text-gray-600">Clear sets, reps, and weekly progression guidance.</p>
+        <p class="mt-2 text-gray-600">
+          Clear sets, reps, and how to progress week to week.
+        </p>
       </div>
     </section>
 
     <!-- WHAT YOU GET -->
     <section id="what-you-get" class="max-w-5xl mx-auto mt-16 bg-white p-8 rounded-xl shadow">
       <h2 class="text-2xl font-bold">What you’ll receive</h2>
-      <ul class="mt-4 grid gap-3 md:grid-cols-2 text-gray-700">
-        <li>• Home + gym compatible schedule</li>
-        <li>• Exercises with sets and reps</li>
-        <li>• Progression guidance (weeks 1–4)</li>
-        <li>• Substitutions based on equipment</li>
-      </ul>
-      <p class="mt-4 text-sm text-gray-500">
-        You’ll see a plan instantly after submitting.
+
+      <div class="mt-6 grid gap-6 md:grid-cols-2">
+        <!-- Free -->
+        <div class="border rounded-xl p-6">
+          <h3 class="text-lg font-bold text-gray-900">Free plan preview</h3>
+          <p class="mt-2 text-sm text-gray-600">
+            Great if you just want a clear structure to follow.
+          </p>
+          <ul class="mt-4 text-sm text-gray-700 space-y-2">
+            <li>• Weekly schedule (3/4/5 days)</li>
+            <li>• Exercises with sets and reps</li>
+            <li>• Home + gym options</li>
+            <li>• Basic progression (Weeks 1–4)</li>
+          </ul>
+        </div>
+
+        <!-- Upgrade -->
+        <div class="border border-green-200 bg-green-50 rounded-xl p-6">
+          <h3 class="text-lg font-bold text-gray-900">Optional upgrade (recommended)</h3>
+          <p class="mt-2 text-sm text-gray-700">
+            If you want a plan tailored to you (not just a template), upgrade after you submit.
+          </p>
+          <ul class="mt-4 text-sm text-gray-700 space-y-2">
+            <li>• Injury-safe substitutions that fit your body</li>
+            <li>• Better weekly structure (volume + intensity tuned)</li>
+            <li>• Progression tweaks based on your goal</li>
+            <li>• Faster turnaround + priority support</li>
+          </ul>
+          <p class="mt-4 text-sm text-gray-700 font-semibold">
+            You’ll see the upgrade option on the next page.
+          </p>
+        </div>
+      </div>
+
+      <p class="mt-6 text-sm text-gray-500">
+        You’ll see your plan instantly after submitting.
       </p>
     </section>
 
     <!-- FORM -->
     <section class="max-w-3xl mx-auto mt-20">
-      <h2 class="text-2xl font-bold text-center mb-6">
-        Request your free AI fitness plan
+      <h2 class="text-2xl font-bold text-center mb-2">
+        Build your plan in 30 seconds
       </h2>
+      <p class="text-center text-sm text-gray-600 mb-6">
+        Answer a few questions. You’ll get a structured plan preview immediately.
+      </p>
 
       <form
         id="planForm"
@@ -122,7 +160,7 @@
         ></textarea>
 
         <button class="w-full bg-green-600 text-white py-3 rounded font-semibold hover:bg-green-700">
-          Get my plan
+          Get my plan preview
         </button>
 
         <p class="text-xs text-gray-500 text-center">
@@ -141,14 +179,20 @@
           <p class="mt-2 text-gray-600 text-sm">Yes — you’ll see a plan preview right after submitting.</p>
         </div>
         <div class="p-6">
-          <h3 class="font-semibold">Can you adjust for injuries?</h3>
-          <p class="mt-2 text-gray-600 text-sm">Yes — add notes and we’ll provide safer substitutions.</p>
+          <h3 class="font-semibold">What if I have injuries?</h3>
+          <p class="mt-2 text-gray-600 text-sm">Add notes and we’ll provide safer substitutions.</p>
+        </div>
+        <div class="p-6">
+          <h3 class="font-semibold">Is there a paid option?</h3>
+          <p class="mt-2 text-gray-600 text-sm">
+            Yes — after you submit, you’ll have an optional upgrade if you want deeper customization and priority support.
+          </p>
         </div>
       </div>
     </section>
 
     <footer class="text-center mt-20 text-sm text-gray-500">
-      © 2025 FitFlow AI • Privacy-first
+      © 2026 FitFlow AI • Privacy-first
     </footer>
   </main>
 
@@ -164,7 +208,7 @@
 
         const formData = new FormData(form);
 
-        // Build query params for thank-you page plan preview
+        // Query params for thank-you page plan preview
         const params = new URLSearchParams();
         params.set("goal", String(formData.get("goal") || ""));
         params.set("experience", String(formData.get("experience") || ""));
@@ -172,36 +216,26 @@
         params.set("equipment", String(formData.get("equipment") || ""));
         params.set("notes", String(formData.get("notes") || ""));
 
-        // Build payload for Zapier (x-www-form-urlencoded)
+        // Payload for Zapier
         const payload = new URLSearchParams();
-        for (const [key, value] of formData.entries()) {
-          payload.append(key, String(value));
-        }
+        for (const [k, v] of formData.entries()) payload.append(k, String(v));
         payload.append("timestamp", new Date().toISOString());
         payload.append("source", "fitflow-ai-site");
 
-        // Try sendBeacon (best effort, no CORS issues)
-        let sent = false;
+        // Best-effort send (no blocking)
         try {
-          const blob = new Blob([payload.toString()], {
-            type: "application/x-www-form-urlencoded",
-          });
-          sent = navigator.sendBeacon(ZAPIER_HOOK_URL, blob);
-        } catch (err) {
-          // ignore
-        }
+          const blob = new Blob([payload.toString()], { type: "application/x-www-form-urlencoded" });
+          navigator.sendBeacon(ZAPIER_HOOK_URL, blob);
+        } catch (_) {}
 
-        // Fallback to fetch no-cors (best effort)
-        if (!sent) {
-          fetch(ZAPIER_HOOK_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: payload.toString(),
-          }).catch(() => {});
-        }
+        fetch(ZAPIER_HOOK_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: payload.toString(),
+        }).catch(() => {});
 
-        // Always redirect to show the plan preview immediately
+        // Always redirect to preview + upgrade page
         window.location.href = "./thank-you.html?" + params.toString();
       });
     });
