@@ -3,174 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>You’re All Set — FitFlow AI</title>
+  <title>Your Plan Is Ready</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body class="bg-green-50 min-h-screen flex items-center justify-center p-6">
-  <div class="w-full max-w-3xl bg-white rounded-2xl shadow p-8">
+<body class="bg-green-50 flex items-center justify-center min-h-screen">
+  <div class="max-w-xl bg-white p-8 rounded-2xl shadow-xl text-center">
 
-    <!-- Confirmation -->
-    <div class="text-center">
-      <h1 class="text-4xl font-bold text-green-700">You’re all set</h1>
-      <p class="mt-4 text-lg text-gray-700">
-        Thanks for submitting your details. Your personalized plan preview is below.
-      </p>
-      <p class="mt-2 text-sm text-gray-500">
-        A refined version is typically delivered within <span class="font-semibold">24 hours</span>.
-      </p>
-    </div>
+    <h1 class="text-4xl font-bold text-green-700">🎉 Your Plan Preview Is Ready</h1>
 
-    <!-- Upgrade Section -->
-    <div class="mt-8 border border-green-200 bg-green-50 rounded-xl p-6">
-      <h2 class="text-xl font-bold text-gray-900">
-        Want faster delivery and deeper customization?
-      </h2>
-
-      <p class="mt-2 text-sm text-gray-700">
-        This optional upgrade prioritizes your plan and adds more detail based on your goals and equipment.
-      </p>
-
-      <ul class="mt-4 text-sm text-gray-700 space-y-2">
-        <li>• Priority delivery (often same day)</li>
-        <li>• More detailed weekly structure</li>
-        <li>• Exercise substitutions tailored to you</li>
-      </ul>
-
-      <!-- LIVE STRIPE PAYMENT LINK -->
-      <a
-        href="https://buy.stripe.com/cNidRb1jcaCD0Tc0C07AI00"
-        class="inline-block mt-5 w-full text-center px-6 py-3 bg-green-700 text-white rounded-lg font-semibold hover:bg-green-800"
-      >
-        Upgrade for Priority Delivery ($19)
-      </a>
-
-      <p class="mt-2 text-xs text-gray-500 text-center">
-        One-time payment. No subscription.
-      </p>
-    </div>
-
-    <!-- Plan Preview -->
-    <div class="mt-10">
-      <h2 class="text-2xl font-bold text-gray-900">Your plan preview</h2>
-
-      <div class="mt-4 bg-gray-50 border rounded-xl p-5">
-        <div class="grid gap-2 md:grid-cols-2 text-sm text-gray-700">
-          <div><strong>Goal:</strong> <span id="vGoal"></span></div>
-          <div><strong>Experience:</strong> <span id="vExp"></span></div>
-          <div><strong>Days / week:</strong> <span id="vDays"></span></div>
-          <div><strong>Equipment:</strong> <span id="vEquip"></span></div>
-        </div>
-
-        <div class="mt-3 text-sm text-gray-700">
-          <strong>Notes:</strong>
-          <div id="vNotes" class="mt-1 text-gray-600"></div>
-        </div>
-      </div>
-
-      <div id="planContainer" class="mt-6 space-y-6"></div>
-
-      <div class="mt-6 text-sm text-gray-600">
-        <strong>Progress rule:</strong>
-        Add 1–2 reps when all sets feel controlled. Add weight only when form stays clean.
-      </div>
-    </div>
-
-    <!-- Navigation -->
-    <div class="mt-10 flex flex-col sm:flex-row gap-3">
-      <a
-        href="./index.html"
-        class="w-full text-center px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-      >
-        Back to Home
-      </a>
-      <a
-        href="./index.html#planForm"
-        class="w-full text-center px-6 py-2 border border-gray-300 text-gray-800 rounded hover:bg-gray-50"
-      >
-        Submit another request
-      </a>
-    </div>
-
-    <p class="mt-6 text-center text-xs text-gray-500">
-      We respect your privacy and only use your information to generate your plan.
+    <p class="mt-4 text-lg text-gray-700">
+      We’ve generated a starter structure based on your goals.
+      Unlock the <strong>complete personalized workout plan</strong> below.
     </p>
+
+    <!-- URGENCY -->
+    <div class="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+      <p class="text-red-700 font-semibold">
+        ⏳ Your free preview expires in <span id="timer">10:00</span>
+      </p>
+      <p class="text-sm text-red-600 mt-1">
+        Upgrade now to unlock your full routine, progression plan, and exercise guide.
+      </p>
+    </div>
+
+    <!-- PRICE -->
+    <div class="mt-6">
+      <p class="text-gray-500 line-through">$29 regular price</p>
+      <p class="text-3xl font-bold text-green-700">
+        Founders Launch Price: $9
+      </p>
+      <p class="text-sm text-gray-500">
+        First 25 users only
+      </p>
+    </div>
+
+    <!-- STRIPE BUTTON -->
+    <a href="https://buy.stripe.com/cNidRb1jcaCD0Tc0C07AI00"
+       class="inline-block mt-6 px-8 py-3 bg-green-600 text-white text-lg font-semibold rounded-xl hover:bg-green-700 transition">
+       Unlock My Full Plan →
+    </a>
+
+    <!-- TRUST -->
+    <p class="mt-4 text-sm text-gray-500">
+      One-time payment • Instant access • 7-day guarantee
+    </p>
+
+    <!-- BACK HOME -->
+    <div class="mt-6">
+      <a href="./index.html" class="text-blue-600 underline text-sm">
+        ← Back to home
+      </a>
+    </div>
+
   </div>
 
-  <!-- PLAN RENDER SCRIPT -->
+  <!-- Countdown Timer Script -->
   <script>
-    function safe(el, val) {
-      el.textContent = val || "";
-    }
+    let time = 600;
+    const timerEl = document.getElementById("timer");
 
-    function section(title, items) {
-      const d = document.createElement("div");
-      d.className = "bg-white border rounded-xl p-5";
-
-      const h = document.createElement("h3");
-      h.className = "text-lg font-bold";
-      h.textContent = title;
-
-      const ul = document.createElement("ul");
-      ul.className = "mt-3 space-y-2 text-sm text-gray-700";
-
-      items.forEach(i => {
-        const li = document.createElement("li");
-        li.textContent = i;
-        ul.appendChild(li);
-      });
-
-      d.appendChild(h);
-      d.appendChild(ul);
-      return d;
-    }
-
-    const params = new URLSearchParams(window.location.search);
-
-    const goal = params.get("goal") || "General fitness";
-    const experience = params.get("experience") || "Beginner";
-    const days = params.get("days") || "3";
-    const equipment = params.get("equipment") || "Home + Gym";
-    const notes = params.get("notes") || "None";
-
-    safe(document.getElementById("vGoal"), goal);
-    safe(document.getElementById("vExp"), experience);
-    safe(document.getElementById("vDays"), days);
-    safe(document.getElementById("vEquip"), equipment);
-    safe(document.getElementById("vNotes"), notes);
-
-    const plan = document.getElementById("planContainer");
-
-    plan.appendChild(section("Warm-up (5–7 minutes)", [
-      "2 minutes light cardio",
-      "10 squats",
-      "10 hip hinges",
-      "10 push-ups (incline if needed)",
-      "10 rows or band pull-aparts"
-    ]));
-
-    plan.appendChild(section("Full Body A (Home + Gym)", [
-      "Squat or leg press — 3 × 8–12",
-      "Push-ups or DB bench press — 3 × 8–12",
-      "Row (DB or cable) — 3 × 10–12",
-      "Romanian deadlift — 3 × 8–12",
-      "Plank — 3 × 30–45 sec"
-    ]));
-
-    plan.appendChild(section("Full Body B (Home + Gym)", [
-      "Reverse lunges — 3 × 8/side",
-      "Overhead press — 3 × 8–10",
-      "Pulldown or band pulldown — 3 × 10–12",
-      "Glute bridge or hamstring curl — 3 × 10–15",
-      "Dead bug — 3 × 8/side"
-    ]));
-
-    plan.appendChild(section("Weekly Progression", [
-      "Week 1: learn movements",
-      "Week 2: add reps",
-      "Week 3: add light weight",
-      "Week 4: refine form"
-    ]));
+    setInterval(() => {
+      const minutes = Math.floor(time / 60);
+      const seconds = time % 60;
+      timerEl.textContent =
+        minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+      if (time > 0) time--;
+    }, 1000);
   </script>
 </body>
 </html>
