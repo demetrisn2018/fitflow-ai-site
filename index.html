@@ -62,24 +62,40 @@
         Get Your Free Personalized Plan Preview
       </h2>
 
-      <form 
-        action="https://hooks.zapier.com/hooks/catch/25952455/uwqz6ym/"
-        method="POST"
-        class="bg-white p-6 rounded-xl shadow space-y-4"
-      >
+      <div id="statusMsg" class="hidden mb-4 text-center text-sm"></div>
+
+      <!-- IMPORTANT: no action/method; submit handled by JS -->
+      <form id="planForm" class="bg-white p-6 rounded-xl shadow space-y-4">
+
         <input required type="email" name="email" placeholder="Your email address" class="w-full border p-2 rounded">
 
         <input required type="text" name="goal" placeholder="Your main goal (fat loss, muscle gain, etc)" class="w-full border p-2 rounded">
 
-        <input required type="text" name="experience" placeholder="Experience level (beginner, intermediate)" class="w-full border p-2 rounded">
+        <select required name="experience" class="w-full border p-2 rounded">
+          <option value="" disabled selected>Experience level</option>
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate">Intermediate</option>
+          <option value="Advanced">Advanced</option>
+        </select>
 
-        <input required type="number" name="days" placeholder="Days per week you can train" class="w-full border p-2 rounded">
+        <select required name="days" class="w-full border p-2 rounded">
+          <option value="" disabled selected>Days per week you can train</option>
+          <option value="2">2 days/week</option>
+          <option value="3">3 days/week</option>
+          <option value="4">4 days/week</option>
+          <option value="5">5 days/week</option>
+          <option value="6">6 days/week</option>
+        </select>
 
         <textarea name="equipment" placeholder="Equipment available (gym, dumbbells, none)" class="w-full border p-2 rounded"></textarea>
 
         <textarea name="notes" placeholder="Injuries or special notes" class="w-full border p-2 rounded"></textarea>
 
-        <button class="w-full bg-green-600 text-white py-3 rounded font-semibold hover:bg-green-700">
+        <!-- Hidden metadata -->
+        <input type="hidden" name="source" value="builtbetter.fitness">
+        <input type="hidden" name="timestamp" id="tsField" value="">
+
+        <button id="submitBtn" class="w-full bg-green-600 text-white py-3 rounded font-semibold hover:bg-green-700">
           Generate My Plan →
         </button>
       </form>
@@ -99,5 +115,47 @@
     </footer>
 
   </main>
+
+  <!-- Zapier submit + redirect -->
+  <script>
+    // Set timestamp
+    document.getElementById("tsField").value = new Date().toISOString();
+
+    const ZAPIER_HOOK_URL = "https://hooks.zapier.com/hooks/catch/25952455/uwqz6ym/";
+    const form = document.getElementById("planForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const statusMsg = document.getElementById("statusMsg");
+
+    function showStatus(text, isError=false) {
+      statusMsg.textContent = text;
+      statusMsg.className = "mb-4 text-center text-sm " + (isError ? "text-red-600" : "text-green-700");
+      statusMsg.classList.remove("hidden");
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting…";
+
+      const formData = new FormData(form);
+
+      try {
+        const res = await fetch(ZAPIER_HOOK_URL, {
+          method: "POST",
+          body: formData
+        });
+
+        if (!res.ok) throw new Error("Zapier request failed");
+
+        // Redirect to thank you page in your site
+        window.location.href = "./thank-you.html";
+      } catch (err) {
+        showStatus("There was an issue submitting the form. Please try again.", true);
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Generate My Plan →";
+      }
+    });
+  </script>
 </body>
 </html>
