@@ -1,132 +1,100 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Plan Preview</title>
+  <title>Your Personalized Week 1</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body class="bg-green-50 min-h-screen">
-  <main class="max-w-3xl mx-auto p-6 md:p-10">
+<body class="bg-green-50 p-6">
 
-    <!-- Header -->
-    <section class="bg-white p-8 rounded-2xl shadow text-center">
-      <h1 class="text-4xl font-bold text-green-700">✅ Your Plan Preview Is Ready</h1>
-      <p class="mt-3 text-gray-700 text-lg">
-        Here’s your starter structure. If you want the full <strong>30-day structured program</strong>
-        with progression, substitutions, and full scheduling, unlock it below.
-      </p>
+<div class="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow">
 
-      <!-- Urgency -->
-      <div class="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-        <p class="text-red-700 font-semibold">
-          ⏳ Founders pricing expires in <span id="timer">10:00</span>
-        </p>
-        <p class="text-sm text-red-600 mt-1">
-          Upgrade now to lock in the $9 founders price before it increases to $29.
-        </p>
-      </div>
+<h1 class="text-3xl font-bold text-green-700 mb-4">
+Your Personalized Week 1 Plan
+</h1>
 
-      <!-- Price + CTA -->
-      <div class="mt-6">
-        <p class="text-gray-500 line-through">$29 regular price</p>
-        <p class="text-3xl font-bold text-green-700">Founders Launch Price: $9</p>
-        <p class="text-sm text-gray-500">First 25 users only</p>
+<div id="planOutput" class="space-y-6"></div>
 
-        <!-- UPDATED LIVE STRIPE LINK -->
-        <a href="https://buy.stripe.com/3cI6oJge69yzgSa70o7AI01"
-           class="inline-block mt-5 px-8 py-3 bg-green-600 text-white text-lg font-semibold rounded-xl hover:bg-green-700 transition">
-          Unlock My Full 30-Day Plan →
-        </a>
+<hr class="my-8">
 
-        <p class="mt-3 text-sm text-gray-500">
-          One-time payment • Instant access • 7-day guarantee
-        </p>
-      </div>
-    </section>
+<p class="text-xl font-bold text-center">
+Unlock the Full 30-Day Program for $9
+</p>
 
-    <!-- Preview Section -->
-    <section class="mt-8 bg-white p-8 rounded-2xl shadow">
-      <h2 class="text-2xl font-bold text-gray-800">Your 3-Day Preview (Week 1)</h2>
-      <p class="mt-2 text-gray-600">
-        This preview shows your structure. The full upgrade includes a complete 4-week progression plan,
-        exact sets/reps, substitutions, and weekly targets.
-      </p>
+<a href="https://buy.stripe.com/3cI6oJge69yzgSa70o7AI01"
+   class="block text-center mt-4 bg-green-600 text-white py-3 rounded-lg font-semibold">
+Unlock My Full Plan →
+</a>
 
-      <div class="mt-6 grid gap-6">
+</div>
 
-        <!-- Day 1 -->
-        <div class="border rounded-xl p-6">
-          <h3 class="text-xl font-semibold">Day 1 — Full Body (Strength)</h3>
-          <ul class="mt-3 space-y-2 text-gray-700">
-            <li>• Squat variation — 3 sets</li>
-            <li>• Push movement — 3 sets</li>
-            <li>• Pull movement — 3 sets</li>
-            <li>• Hip hinge — 2 sets</li>
-            <li>• Core movement — 2 sets</li>
-          </ul>
-        </div>
+<script>
+const params = new URLSearchParams(window.location.search);
 
-        <!-- Day 2 -->
-        <div class="border rounded-xl p-6">
-          <h3 class="text-xl font-semibold">Day 2 — Conditioning + Core</h3>
-          <ul class="mt-3 space-y-2 text-gray-700">
-            <li>• 20–30 min cardio</li>
-            <li>• Optional interval finisher</li>
-            <li>• Core circuit</li>
-            <li>• Mobility work</li>
-          </ul>
-        </div>
+const goal = params.get("goal");
+const days = params.get("days");
+const experience = params.get("experience");
 
-        <!-- Day 3 -->
-        <div class="border rounded-xl p-6">
-          <h3 class="text-xl font-semibold">Day 3 — Full Body (Hypertrophy)</h3>
-          <ul class="mt-3 space-y-2 text-gray-700">
-            <li>• Lower body focus — 3 sets</li>
-            <li>• Upper push — 3 sets</li>
-            <li>• Upper pull — 3 sets</li>
-            <li>• Shoulders + arms — 2 sets each</li>
-          </ul>
-        </div>
+const planDiv = document.getElementById("planOutput");
 
-      </div>
+function createDay(title, exercises) {
+  return `
+  <div>
+    <h2 class="text-xl font-semibold">${title}</h2>
+    <ul class="list-disc pl-6 mt-2">
+      ${exercises.map(e => `<li>${e}</li>`).join("")}
+    </ul>
+  </div>
+  `;
+}
 
-      <!-- Value Reminder -->
-      <div class="mt-8 p-6 bg-gray-50 rounded-xl">
-        <h3 class="text-lg font-semibold">Full Plan Unlock Includes:</h3>
-        <ul class="mt-3 grid gap-2 text-gray-700 md:grid-cols-2">
-          <li>✅ Full 30-day schedule</li>
-          <li>✅ Progression rules</li>
-          <li>✅ Equipment substitutions</li>
-          <li>✅ Warm-up guidance</li>
-          <li>✅ Tracking template</li>
-          <li>✅ Home + gym options</li>
-        </ul>
-      </div>
-    </section>
+let output = "";
 
-    <section class="text-center mt-8">
-      <a href="./index.html" class="text-blue-600 underline text-sm">
-        ← Back to home
-      </a>
-    </section>
+if(days == "3") {
+  output += createDay("Day 1 – Full Body",
+    ["Squat – 3x8",
+     "Bench Press – 3x8",
+     "Lat Pulldown – 3x10",
+     "RDL – 2x10",
+     "Plank – 2x30s"]);
 
-  </main>
+  output += createDay("Day 2 – Conditioning",
+    ["20 min incline walk",
+     "Core circuit x2 rounds"]);
 
-  <!-- Countdown Timer Script -->
-  <script>
-    let time = 600;
-    const timerEl = document.getElementById("timer");
+  output += createDay("Day 3 – Full Body",
+    ["Split Squat – 3x10",
+     "Incline DB Press – 3x10",
+     "Row – 3x10",
+     "Lateral Raise – 2x12",
+     "Curl + Triceps – 2x12"]);
+}
 
-    const interval = setInterval(() => {
-      const minutes = Math.floor(time / 60);
-      const seconds = time % 60;
-      timerEl.textContent =
-        minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
-      if (time > 0) time--;
-      else clearInterval(interval);
-    }, 1000);
-  </script>
+if(days == "4") {
+  output += createDay("Day 1 – Upper",
+    ["Bench – 3x8",
+     "Row – 3x10",
+     "Shoulders – 2x12",
+     "Arms – 2x12"]);
+
+  output += createDay("Day 2 – Lower",
+    ["Squat – 3x8",
+     "RDL – 3x10",
+     "Lunges – 2x10"]);
+
+  output += createDay("Day 3 – Rest or Cardio",
+    ["20–30 min steady cardio"]);
+
+  output += createDay("Day 4 – Full Body",
+    ["Leg Press – 3x10",
+     "DB Bench – 3x10",
+     "Pulldown – 3x10"]);
+}
+
+planDiv.innerHTML = output;
+</script>
+
 </body>
 </html>
