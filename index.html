@@ -21,93 +21,9 @@
       </h1>
 
       <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-        BuiltBetter creates a personalized 30-day plan based on your <strong>schedule</strong>, <strong>equipment</strong>,
-        <strong>experience</strong>, and <strong>goal</strong> — with a simple progression system so you keep improving.
+        BuiltBetter creates a personalized 30-day plan based on your
+        schedule, equipment, experience, and goal.
       </p>
-
-      <!-- Trust badges -->
-      <div class="flex flex-wrap items-center justify-center gap-3 text-sm text-gray-500">
-        <span class="bg-white px-3 py-2 rounded-lg shadow-sm">⚡ Instant preview</span>
-        <span class="bg-white px-3 py-2 rounded-lg shadow-sm">💳 One-time $9 upgrade</span>
-        <span class="bg-white px-3 py-2 rounded-lg shadow-sm">✅ 7-day guarantee</span>
-      </div>
-    </section>
-
-    <!-- SOCIAL PROOF -->
-    <section class="max-w-4xl mx-auto mt-10">
-      <div class="bg-white p-6 rounded-2xl shadow text-center">
-        <p class="italic text-gray-700">
-          “This was the first time I stuck to a routine without overthinking it. The structure made it easy.”
-        </p>
-        <p class="mt-3 text-sm text-gray-500">— Early BuiltBetter user</p>
-      </div>
-    </section>
-
-    <!-- HOW IT WORKS -->
-    <section class="max-w-5xl mx-auto mt-14">
-      <h2 class="text-2xl font-bold text-center">How it works</h2>
-      <p class="text-center text-gray-600 mt-2">Three steps. No fluff. Just a plan you can follow.</p>
-
-      <div class="mt-8 grid gap-6 md:grid-cols-3">
-        <div class="bg-white p-6 rounded-2xl shadow">
-          <p class="text-sm font-semibold text-green-700">Step 1</p>
-          <h3 class="text-xl font-bold mt-2">Answer 5 quick questions</h3>
-          <p class="text-gray-600 mt-2">Goal, experience, days/week, equipment, and notes.</p>
-        </div>
-
-        <div class="bg-white p-6 rounded-2xl shadow">
-          <p class="text-sm font-semibold text-green-700">Step 2</p>
-          <h3 class="text-xl font-bold mt-2">Get your plan preview instantly</h3>
-          <p class="text-gray-600 mt-2">See your Week 1 structure immediately on the next page.</p>
-        </div>
-
-        <div class="bg-white p-6 rounded-2xl shadow">
-          <p class="text-sm font-semibold text-green-700">Step 3</p>
-          <h3 class="text-xl font-bold mt-2">Unlock the full 30-day plan</h3>
-          <p class="text-gray-600 mt-2">Upgrade for $9 to get progression, substitutions, and full schedule.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- WHAT YOU GET -->
-    <section class="max-w-5xl mx-auto mt-14">
-      <div class="bg-white p-8 rounded-2xl shadow">
-        <h2 class="text-2xl font-bold text-center">What you get</h2>
-        <p class="text-center text-gray-600 mt-2">Designed for beginners who want results without confusion.</p>
-
-        <div class="mt-8 grid gap-4 md:grid-cols-2 text-gray-700">
-          <div class="flex gap-3">
-            <span>✅</span>
-            <p><strong>Full 30-day schedule</strong> (built around your days/week)</p>
-          </div>
-          <div class="flex gap-3">
-            <span>✅</span>
-            <p><strong>Progression rules</strong> (when to add weight/reps)</p>
-          </div>
-          <div class="flex gap-3">
-            <span>✅</span>
-            <p><strong>Home + gym versions</strong> (equipment-based swaps)</p>
-          </div>
-          <div class="flex gap-3">
-            <span>✅</span>
-            <p><strong>Exercise substitutions</strong> (no more “I can’t do that machine”)</p>
-          </div>
-          <div class="flex gap-3">
-            <span>✅</span>
-            <p><strong>Warm-up + mobility</strong> (quick and simple)</p>
-          </div>
-          <div class="flex gap-3">
-            <span>✅</span>
-            <p><strong>Simple tracking</strong> (so progress is obvious)</p>
-          </div>
-        </div>
-
-        <div class="mt-8 text-center">
-          <p class="text-gray-500 line-through">$29 regular price</p>
-          <p class="text-3xl font-bold text-green-700">Founders Price: $9</p>
-          <p class="text-sm text-gray-500">Unlock shown after your free preview</p>
-        </div>
-      </div>
     </section>
 
     <!-- FORM -->
@@ -116,13 +32,13 @@
         Get Your Free Plan Preview
       </h2>
 
-      <div id="statusMsg" class="hidden mb-4 text-center text-sm"></div>
-
       <form id="planForm" class="bg-white p-6 rounded-2xl shadow space-y-4">
 
-        <input required type="email" name="email" placeholder="Your email address" class="w-full border p-3 rounded-lg">
+        <input required type="email" name="email" placeholder="Your email address"
+               class="w-full border p-3 rounded-lg">
 
-        <input required type="text" name="goal" placeholder="Your main goal (fat loss, muscle gain, etc)" class="w-full border p-3 rounded-lg">
+        <input required type="text" name="goal" placeholder="Your main goal (fat loss, muscle gain, etc)"
+               class="w-full border p-3 rounded-lg">
 
         <select required name="experience" class="w-full border p-3 rounded-lg">
           <option value="" disabled selected>Experience level</option>
@@ -133,66 +49,21 @@
 
         <select required name="days" class="w-full border p-3 rounded-lg">
           <option value="" disabled selected>Days per week you can train</option>
-          <option value="2">2 days/week</option>
           <option value="3">3 days/week</option>
           <option value="4">4 days/week</option>
-          <option value="5">5 days/week</option>
-          <option value="6">6 days/week</option>
         </select>
 
-        <textarea name="equipment" placeholder="Equipment available (gym, dumbbells, none)" class="w-full border p-3 rounded-lg"></textarea>
+        <textarea name="equipment" placeholder="Equipment available (gym, dumbbells, none)"
+                  class="w-full border p-3 rounded-lg"></textarea>
 
-        <textarea name="notes" placeholder="Injuries or special notes" class="w-full border p-3 rounded-lg"></textarea>
+        <textarea name="notes" placeholder="Injuries or special notes"
+                  class="w-full border p-3 rounded-lg"></textarea>
 
-        <input type="hidden" name="source" value="builtbetter.fitness">
-        <input type="hidden" name="timestamp" id="tsField" value="">
-
-        <button id="submitBtn" class="w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition">
+        <button id="submitBtn"
+                class="w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition">
           Generate My Plan →
         </button>
-
-        <p class="text-center text-xs text-gray-500">
-          By submitting, you’ll receive your plan preview and a follow-up email.
-        </p>
       </form>
-    </section>
-
-    <!-- FAQ -->
-    <section class="max-w-5xl mx-auto mt-16">
-      <div class="bg-white p-8 rounded-2xl shadow">
-        <h2 class="text-2xl font-bold text-center">FAQ</h2>
-
-        <div class="mt-8 grid gap-6 md:grid-cols-2">
-          <div>
-            <h3 class="font-semibold">Why not just use ChatGPT?</h3>
-            <p class="text-gray-600 mt-2">
-              BuiltBetter gives you a structured 30-day schedule + progression system + substitutions.
-              It’s built to be <strong>followed</strong>, not just read once.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="font-semibold">Is this for beginners?</h3>
-            <p class="text-gray-600 mt-2">
-              Yes — it’s designed for beginners and busy people who want a plan they can stick to.
-            </p>
-          </div>
-
-          <div>
-            <h3 class="font-semibold">Home or gym?</h3>
-            <p class="text-gray-600 mt-2">
-              Both. You’ll get equipment-based swaps (home minimal, dumbbells, or full gym).
-            </p>
-          </div>
-
-          <div>
-            <h3 class="font-semibold">What if I don’t like it?</h3>
-            <p class="text-gray-600 mt-2">
-              There’s a <strong>7-day guarantee</strong>. If it’s not helpful, you can request a refund.
-            </p>
-          </div>
-        </div>
-      </div>
     </section>
 
     <footer class="text-center mt-20 text-sm text-gray-500">
@@ -201,39 +72,31 @@
 
   </main>
 
-  <!-- Zapier submit + redirect -->
+  <!-- SCRIPT -->
   <script>
-    document.getElementById("tsField").value = new Date().toISOString();
-
     const ZAPIER_HOOK_URL = "https://hooks.zapier.com/hooks/catch/25952455/uwqz6ym/";
     const form = document.getElementById("planForm");
-    const submitBtn = document.getElementById("submitBtn");
-    const statusMsg = document.getElementById("statusMsg");
-
-    function showStatus(text, isError=false) {
-      statusMsg.textContent = text;
-      statusMsg.className = "mb-4 text-center text-sm " + (isError ? "text-red-600" : "text-green-700");
-      statusMsg.classList.remove("hidden");
-    }
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Submitting…";
-
       const formData = new FormData(form);
 
       try {
-        const res = await fetch(ZAPIER_HOOK_URL, { method: "POST", body: formData });
-        if (!res.ok) throw new Error("Zapier request failed");
-        window.location.href = "./thank-you.html";
+        await fetch(ZAPIER_HOOK_URL, {
+          method: "POST",
+          body: formData
+        });
+
+        // 🔥 Pass form data to thank-you page
+        const params = new URLSearchParams(formData).toString();
+        window.location.href = "./thank-you.html?" + params;
+
       } catch (err) {
-        showStatus("There was an issue submitting the form. Please try again.", true);
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Generate My Plan →";
+        alert("There was an issue submitting the form. Please try again.");
       }
     });
   </script>
+
 </body>
 </html>
