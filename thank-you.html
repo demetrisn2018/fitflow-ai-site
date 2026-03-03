@@ -21,6 +21,21 @@
       <!-- Summary -->
       <div id="summary" class="mt-5 p-4 bg-gray-50 rounded-xl text-gray-700"></div>
 
+      <!-- Quick Actions -->
+      <div class="mt-6 grid gap-3 md:grid-cols-2">
+        <button id="downloadPdfBtn"
+          class="w-full px-5 py-3 bg-white border border-gray-200 rounded-xl font-semibold hover:bg-gray-50">
+          📄 Download Week 1 PDF
+        </button>
+
+        <button id="emailPlanBtn"
+          class="w-full px-5 py-3 bg-white border border-gray-200 rounded-xl font-semibold hover:bg-gray-50">
+          ✉️ Email me this Week 1 plan
+        </button>
+      </div>
+
+      <div id="actionMsg" class="mt-3 text-sm text-gray-600"></div>
+
       <!-- Urgency -->
       <div class="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
         <p class="text-red-700 font-semibold">
@@ -92,248 +107,320 @@
 
   </main>
 
+  <!-- jsPDF for PDF download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <script>
-    // ----- Read inputs -----
+    // ---------------------------
+    // CONFIG
+    // ---------------------------
+    const ZAPIER_HOOK_URL = "https://hooks.zapier.com/hooks/catch/25952455/uwqz6ym/";
+
+    // ---------------------------
+    // Read inputs
+    // ---------------------------
     const params = new URLSearchParams(window.location.search);
 
+    const email = (params.get("email") || "").trim();
     const goalRaw = (params.get("goal") || "").toLowerCase();
-    const daysRaw = (params.get("days") || "3").trim();
     const expRaw  = (params.get("experience") || "Beginner").trim();
     const equipRaw = (params.get("equipment") || "").toLowerCase();
     const notesRaw = (params.get("notes") || "").trim();
 
-    // Normalize days
-    let days = parseInt(daysRaw, 10);
+    let days = parseInt((params.get("days") || "3").trim(), 10);
     if (isNaN(days) || days < 2) days = 3;
     if (days > 6) days = 6;
 
-    // Detect equipment type
     const isGym = /gym|barbell|rack|machines|cable|smith|leg press/.test(equipRaw);
     const hasDumbbells = /dumbbell|db|kettlebell|kb/.test(equipRaw);
-    const isBodyweightOnly = !isGym && !hasDumbbells && /none|bodyweight|no equipment|nothing/.test(equipRaw);
+    const equipLabel = isGym ? "Full gym" : (hasDumbbells ? "Dumbbells/home" : "Bodyweight/minimal");
 
-    // Goal type
     const goalType =
       /fat|lose|cut|weight loss/.test(goalRaw) ? "fatloss" :
       /muscle|gain|hypertrophy|build/.test(goalRaw) ? "muscle" :
       /strength|strong|power/.test(goalRaw) ? "strength" :
       "general";
 
-    // Experience type
-    const expType = /adv|advanced/.test(expRaw.toLowerCase()) ? "advanced" :
-                    /inter/.test(expRaw.toLowerCase()) ? "intermediate" : "beginner";
-
-    // Progression cue based on experience
-    const progressionLine =
-      expType === "beginner"
-        ? "Progression tip: when you hit the top of the rep range with good form, add 5 lbs next week (or 1–2 reps if you’re using bodyweight)."
-        : "Progression tip: aim to add 1 rep per set weekly OR add 2.5–5 lbs while keeping form clean.";
-
-    // Helpers
-    const planDiv = document.getElementById("planOutput");
-    const summaryEl = document.getElementById("summary");
-
-    function safeText(t) {
-      return (t || "").replace(/[<>]/g, "");
-    }
-
-    function pick(options) {
-      return options[Math.floor(Math.random() * options.length)];
-    }
-
-    function card(title, bullets, note) {
-      return `
-        <div class="border rounded-xl p-6">
-          <h3 class="text-xl font-semibold">${title}</h3>
-          <ul class="mt-3 space-y-2 text-gray-700">
-            ${bullets.map(b => `<li>• ${b}</li>`).join("")}
-          </ul>
-          ${note ? `<p class="mt-3 text-sm text-gray-500">${note}</p>` : ""}
-        </div>
-      `;
-    }
-
-    // Exercise libraries
-    const squatGym = ["Back Squat — 3×6–8", "Front Squat — 3×6–8", "Leg Press — 3×10"];
-    const squatDB  = ["Goblet Squat — 3×10", "DB Front Squat — 3×8–10", "Split Squat — 3×10"];
-    const squatBW  = ["Split Squat — 3×12", "Tempo Squat — 3×12", "Step-ups — 3×12"];
-
-    const hingeGym = ["RDL — 3×8–10", "Hip Thrust — 3×8–10", "Hamstring Curl — 3×10–12"];
-    const hingeDB  = ["DB RDL — 3×10", "Hip Hinge (DB) — 3×10", "Glute Bridge — 3×12"];
-    const hingeBW  = ["Hip Hinge (tempo) — 3×12", "Single-leg RDL (bodyweight) — 3×10", "Glute Bridge — 3×15"];
-
-    const pushGym = ["Bench Press — 3×6–8", "Incline DB/Chest Press — 3×8–10", "Machine Press — 3×10"];
-    const pushDB  = ["DB Bench — 3×8–10", "Incline DB Press — 3×8–10", "Push-ups — 3×AMRAP (stop 2 reps short)"];
-    const pushBW  = ["Push-ups — 4×AMRAP (stop 2 reps short)", "Pike Push-ups — 3×8–10", "Elevated Push-ups — 3×AMRAP"];
-
-    const pullGym = ["Lat Pulldown — 3×8–12", "Cable Row — 3×8–12", "Chest-Supported Row — 3×10"];
-    const pullDB  = ["One-Arm DB Row — 3×10/side", "DB Row — 3×10", "Band Row — 3×12 (if you have bands)"];
-    const pullBW  = ["Inverted Row (table/TRX) — 4×AMRAP", "Doorway Row (careful) — 3×AMRAP", "Backpack Row — 3×12"];
-
-    const shoulders = ["Lateral Raises — 2×12–15", "Rear Delt Fly — 2×12–15", "Overhead Press — 2×8–10"];
-    const arms = ["Curls — 2×10–12", "Triceps Pressdown/Extensions — 2×10–12", "Hammer Curls — 2×10–12"];
-    const core = ["Plank — 2×30–45s", "Dead Bug — 2×10/side", "Hollow Hold — 2×20–30s"];
-
-    // Select by equipment
-    function pickSquat() {
-      if (isGym) return pick(squatGym);
-      if (hasDumbbells) return pick(squatDB);
-      return pick(squatBW);
-    }
-    function pickHinge() {
-      if (isGym) return pick(hingeGym);
-      if (hasDumbbells) return pick(hingeDB);
-      return pick(hingeBW);
-    }
-    function pickPush() {
-      if (isGym) return pick(pushGym);
-      if (hasDumbbells) return pick(pushDB);
-      return pick(pushBW);
-    }
-    function pickPull() {
-      if (isGym) return pick(pullGym);
-      if (hasDumbbells) return pick(pullDB);
-      return pick(pullBW);
-    }
-
-    // Conditioning based on goal
-    function conditioningDay() {
-      if (goalType === "fatloss") {
-        return card("Conditioning + Core",
-          [
-            "25–35 min Zone 2 cardio (walk, bike, incline treadmill)",
-            "Optional finisher: 6×20s faster pace / 60s easy",
-            "Core: " + pick(core),
-            "Mobility: hips + shoulders (5 minutes)"
-          ],
-          "Fat loss focus: keep cardio conversational (Zone 2) and stay consistent."
-        );
-      }
-
-      // muscle/strength/general
-      return card("Recovery + Core (keeps progress moving)",
-        [
-          "15–25 min easy cardio (walk/bike)",
-          "Core: " + pick(core),
-          "Mobility: hips + ankles + upper back (5 minutes)"
-        ],
-        "This day helps recovery so your strength days feel better."
-      );
-    }
-
-    // Build plan by days/week
-    let blocks = [];
-
-    // Day templates
-    function fullBodyStrength() {
-      const bullets = [
-        pickSquat(),
-        pickPush(),
-        pickPull(),
-        pickHinge(),
-        pick(core)
-      ];
-      const note = (goalType === "strength")
-        ? "Strength focus: use the lower rep ranges and leave 1–2 reps in reserve."
-        : "Keep form strict. Stop each set with ~2 reps left in the tank.";
-      return card("Day 1 — Full Body (Strength)", bullets, note);
-    }
-
-    function fullBodyHypertrophy() {
-      const bullets = [
-        pickSquat(),
-        pickPush(),
-        pickPull(),
-        "Shoulders: " + pick(shoulders),
-        "Arms: " + pick(arms)
-      ];
-      const note = (goalType === "muscle")
-        ? "Muscle focus: controlled reps, short rests (60–90s) on accessories."
-        : "Build the habit first. Consistency beats intensity.";
-      return card("Day — Full Body (Hypertrophy)", bullets, note);
-    }
-
-    function upperDay() {
-      const bullets = [
-        pickPush(),
-        pickPull(),
-        "Shoulders: " + pick(shoulders),
-        "Arms: " + pick(arms),
-        pick(core)
-      ];
-      return card("Upper Body", bullets, "Keep sets crisp; avoid grinding reps.");
-    }
-
-    function lowerDay() {
-      const bullets = [
-        pickSquat(),
-        pickHinge(),
-        (isGym ? "Leg Curl or Calves — 2×12" : "Lunges or Step-ups — 2×12/side"),
-        pick(core)
-      ];
-      return card("Lower Body", bullets, "Focus on tempo and control on lower body.");
-    }
-
-    function restOrLight() {
-      return card("Active Recovery",
-        [
-          "20–30 min easy walk",
-          "5 min mobility (hips + shoulders)",
-          "Optional core: " + pick(core)
-        ],
-        "Do this on a rest day to stay consistent without burning out."
-      );
-    }
-
-    if (days === 2) {
-      blocks.push(fullBodyStrength());
-      blocks.push(fullBodyHypertrophy());
-    } else if (days === 3) {
-      blocks.push(fullBodyStrength());
-      blocks.push(conditioningDay());
-      blocks.push(fullBodyHypertrophy().replace("Day — Full Body (Hypertrophy)", "Day 3 — Full Body (Hypertrophy)"));
-    } else if (days === 4) {
-      blocks.push(upperDay().replace("Upper Body", "Day 1 — Upper"));
-      blocks.push(lowerDay().replace("Lower Body", "Day 2 — Lower"));
-      blocks.push(conditioningDay().replace("Conditioning + Core", "Day 3 — Conditioning + Core").replace("Recovery + Core (keeps progress moving)", "Day 3 — Recovery + Core"));
-      blocks.push(fullBodyHypertrophy().replace("Day — Full Body (Hypertrophy)", "Day 4 — Full Body (Hypertrophy)"));
-    } else if (days === 5) {
-      blocks.push(upperDay().replace("Upper Body", "Day 1 — Upper"));
-      blocks.push(lowerDay().replace("Lower Body", "Day 2 — Lower"));
-      blocks.push(conditioningDay().replace("Conditioning + Core", "Day 3 — Conditioning + Core").replace("Recovery + Core (keeps progress moving)", "Day 3 — Recovery + Core"));
-      blocks.push(upperDay().replace("Upper Body", "Day 4 — Upper (Variation)"));
-      blocks.push(lowerDay().replace("Lower Body", "Day 5 — Lower (Variation)"));
-    } else { // 6
-      blocks.push(upperDay().replace("Upper Body", "Day 1 — Upper"));
-      blocks.push(lowerDay().replace("Lower Body", "Day 2 — Lower"));
-      blocks.push(conditioningDay().replace("Conditioning + Core", "Day 3 — Conditioning + Core").replace("Recovery + Core (keeps progress moving)", "Day 3 — Recovery + Core"));
-      blocks.push(upperDay().replace("Upper Body", "Day 4 — Upper (Variation)"));
-      blocks.push(lowerDay().replace("Lower Body", "Day 5 — Lower (Variation)"));
-      blocks.push(restOrLight().replace("Active Recovery", "Day 6 — Active Recovery"));
-    }
-
-    // Summary render
-    const equipLabel = isGym ? "Full gym" : (hasDumbbells ? "Dumbbells/home" : "Bodyweight");
     const goalLabel =
       goalType === "fatloss" ? "Fat loss" :
       goalType === "muscle" ? "Muscle gain" :
       goalType === "strength" ? "Strength" : "General fitness";
 
+    const expType = /adv|advanced/.test(expRaw.toLowerCase()) ? "advanced" :
+                    /inter/.test(expRaw.toLowerCase()) ? "intermediate" : "beginner";
+
+    const progressionLine =
+      expType === "beginner"
+        ? "Progression tip: when you hit the top of the rep range with good form, add 5 lbs next week (or 1–2 reps for bodyweight)."
+        : "Progression tip: aim to add 1 rep per set weekly OR add 2.5–5 lbs while keeping form clean.";
+
+    // ---------------------------
+    // Render summary
+    // ---------------------------
+    function safeText(t) { return (t || "").replace(/[<>]/g, ""); }
+
+    const summaryEl = document.getElementById("summary");
     summaryEl.innerHTML = `
       <div class="grid gap-2 md:grid-cols-2">
+        <div><strong>Email:</strong> ${email ? safeText(email) : "<span class='text-gray-500'>Not provided</span>"}</div>
         <div><strong>Goal:</strong> ${safeText(goalLabel)}</div>
         <div><strong>Training:</strong> ${days} days/week</div>
-        <div><strong>Experience:</strong> ${safeText(expRaw || "Beginner")}</div>
+        <div><strong>Experience:</strong> ${safeText(expRaw)}</div>
         <div><strong>Equipment:</strong> ${safeText(equipLabel)}</div>
       </div>
       ${notesRaw ? `<div class="mt-3 text-sm text-gray-600"><strong>Notes:</strong> ${safeText(notesRaw)}</div>` : ""}
       <div class="mt-3 text-sm text-gray-600">${progressionLine}</div>
     `;
 
-    // Plan render
-    planDiv.innerHTML = blocks.join("");
+    // ---------------------------
+    // Exercise libraries
+    // ---------------------------
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
+    const squatGym = ["Back Squat — 3×6–8", "Front Squat — 3×6–8", "Leg Press — 3×10"];
+    const squatDB  = ["Goblet Squat — 3×10", "DB Front Squat — 3×8–10", "Split Squat — 3×10"];
+    const squatBW  = ["Split Squat — 3×12", "Tempo Squat — 3×12", "Step-ups — 3×12"];
+
+    const hingeGym = ["RDL — 3×8–10", "Hip Thrust — 3×8–10", "Hamstring Curl — 3×10–12"];
+    const hingeDB  = ["DB RDL — 3×10", "Glute Bridge — 3×12–15", "DB Hip Hinge — 3×10"];
+    const hingeBW  = ["Glute Bridge — 3×15", "Single-leg RDL (bodyweight) — 3×10", "Hip Hinge (tempo) — 3×12"];
+
+    const pushGym = ["Bench Press — 3×6–8", "Incline Press — 3×8–10", "Machine Press — 3×10"];
+    const pushDB  = ["DB Bench — 3×8–10", "Incline DB Press — 3×8–10", "Push-ups — 4×AMRAP (stop 2 reps short)"];
+    const pushBW  = ["Push-ups — 4×AMRAP (stop 2 reps short)", "Pike Push-ups — 3×8–10", "Elevated Push-ups — 3×AMRAP"];
+
+    const pullGym = ["Lat Pulldown — 3×8–12", "Cable Row — 3×8–12", "Chest-Supported Row — 3×10"];
+    const pullDB  = ["One-Arm DB Row — 3×10/side", "DB Row — 3×10", "Band Row — 3×12 (if available)"];
+    const pullBW  = ["Inverted Row (table/TRX) — 4×AMRAP", "Backpack Row — 3×12", "Doorway Row (careful) — 3×AMRAP"];
+
+    const shoulders = ["Lateral Raises — 2×12–15", "Rear Delt Fly — 2×12–15", "Overhead Press — 2×8–10"];
+    const arms = ["Curls — 2×10–12", "Triceps Extensions — 2×10–12", "Hammer Curls — 2×10–12"];
+    const core = ["Plank — 2×30–45s", "Dead Bug — 2×10/side", "Hollow Hold — 2×20–30s"];
+
+    function pickSquat(){ return isGym ? pick(squatGym) : (hasDumbbells ? pick(squatDB) : pick(squatBW)); }
+    function pickHinge(){ return isGym ? pick(hingeGym) : (hasDumbbells ? pick(hingeDB) : pick(hingeBW)); }
+    function pickPush(){ return isGym ? pick(pushGym) : (hasDumbbells ? pick(pushDB) : pick(pushBW)); }
+    function pickPull(){ return isGym ? pick(pullGym) : (hasDumbbells ? pick(pullDB) : pick(pullBW)); }
+
+    // ---------------------------
+    // Build structured week plan (used for HTML + PDF + Email)
+    // ---------------------------
+    const weekPlan = []; // [{title, bullets[], note}]
+
+    function addDay(title, bullets, note="") {
+      weekPlan.push({ title, bullets, note });
+    }
+
+    function conditioningDay() {
+      if (goalType === "fatloss") {
+        addDay("Conditioning + Core",
+          [
+            "25–35 min Zone 2 cardio (walk, bike, incline treadmill)",
+            "Optional finisher: 6×20s faster / 60s easy",
+            "Core: " + pick(core),
+            "Mobility: hips + shoulders (5 minutes)"
+          ],
+          "Fat loss focus: keep cardio conversational (Zone 2) and stay consistent."
+        );
+      } else {
+        addDay("Recovery + Core",
+          [
+            "15–25 min easy cardio (walk/bike)",
+            "Core: " + pick(core),
+            "Mobility: hips + ankles + upper back (5 minutes)"
+          ],
+          "This day helps recovery so your strength days feel better."
+        );
+      }
+    }
+
+    function fullBodyStrength(label) {
+      addDay(label,
+        [pickSquat(), pickPush(), pickPull(), pickHinge(), pick(core)],
+        goalType === "strength"
+          ? "Strength focus: stay in the lower rep range and leave 1–2 reps in reserve."
+          : "Keep form strict. Stop each set with ~2 reps left in the tank."
+      );
+    }
+
+    function fullBodyHypertrophy(label) {
+      addDay(label,
+        [pickSquat(), pickPush(), pickPull(), "Shoulders: " + pick(shoulders), "Arms: " + pick(arms)],
+        goalType === "muscle"
+          ? "Muscle focus: controlled reps, short rests (60–90s) on accessories."
+          : "Build the habit first. Consistency beats intensity."
+      );
+    }
+
+    function upperDay(label) {
+      addDay(label,
+        [pickPush(), pickPull(), "Shoulders: " + pick(shoulders), "Arms: " + pick(arms), pick(core)],
+        "Avoid grinding reps. Keep 1–2 reps in reserve."
+      );
+    }
+
+    function lowerDay(label) {
+      addDay(label,
+        [
+          pickSquat(),
+          pickHinge(),
+          (isGym ? "Leg Curl or Calves — 2×12" : "Lunges or Step-ups — 2×12/side"),
+          pick(core)
+        ],
+        "Lower body: focus on tempo and control."
+      );
+    }
+
+    function activeRecovery(label) {
+      addDay(label,
+        ["20–30 min easy walk", "5 min mobility (hips + shoulders)", "Optional core: " + pick(core)],
+        "Do this on a rest day to stay consistent without burning out."
+      );
+    }
+
+    // Days logic
+    if (days === 2) {
+      fullBodyStrength("Day 1 — Full Body (Strength)");
+      fullBodyHypertrophy("Day 2 — Full Body (Hypertrophy)");
+    } else if (days === 3) {
+      fullBodyStrength("Day 1 — Full Body (Strength)");
+      conditioningDay(); weekPlan[1].title = "Day 2 — " + weekPlan[1].title;
+      fullBodyHypertrophy("Day 3 — Full Body (Hypertrophy)");
+    } else if (days === 4) {
+      upperDay("Day 1 — Upper");
+      lowerDay("Day 2 — Lower");
+      conditioningDay(); weekPlan[2].title = "Day 3 — " + weekPlan[2].title;
+      fullBodyHypertrophy("Day 4 — Full Body (Hypertrophy)");
+    } else if (days === 5) {
+      upperDay("Day 1 — Upper");
+      lowerDay("Day 2 — Lower");
+      conditioningDay(); weekPlan[2].title = "Day 3 — " + weekPlan[2].title;
+      upperDay("Day 4 — Upper (Variation)");
+      lowerDay("Day 5 — Lower (Variation)");
+    } else { // 6
+      upperDay("Day 1 — Upper");
+      lowerDay("Day 2 — Lower");
+      conditioningDay(); weekPlan[2].title = "Day 3 — " + weekPlan[2].title;
+      upperDay("Day 4 — Upper (Variation)");
+      lowerDay("Day 5 — Lower (Variation)");
+      activeRecovery("Day 6 — Active Recovery");
+    }
+
+    // ---------------------------
+    // Render HTML plan
+    // ---------------------------
+    const planDiv = document.getElementById("planOutput");
+
+    function dayCard(d) {
+      return `
+        <div class="border rounded-xl p-6">
+          <h3 class="text-xl font-semibold">${safeText(d.title)}</h3>
+          <ul class="mt-3 space-y-2 text-gray-700">
+            ${d.bullets.map(b => `<li>• ${safeText(b)}</li>`).join("")}
+          </ul>
+          ${d.note ? `<p class="mt-3 text-sm text-gray-500">${safeText(d.note)}</p>` : ""}
+        </div>
+      `;
+    }
+
+    planDiv.innerHTML = weekPlan.map(dayCard).join("");
+
+    // ---------------------------
+    // Build plain text plan (for email + PDF)
+    // ---------------------------
+    function buildPlanText() {
+      const lines = [];
+      lines.push("BuiltBetter Fitness — Week 1 Plan");
+      lines.push(`Goal: ${goalLabel} | Days/week: ${days} | Experience: ${expRaw} | Equipment: ${equipLabel}`);
+      if (notesRaw) lines.push(`Notes: ${notesRaw}`);
+      lines.push("");
+      weekPlan.forEach((d) => {
+        lines.push(d.title);
+        d.bullets.forEach(b => lines.push(" - " + b));
+        if (d.note) lines.push("   Note: " + d.note);
+        lines.push("");
+      });
+      lines.push(progressionLine);
+      return lines.join("\n");
+    }
+
+    const planText = buildPlanText();
+
+    // ---------------------------
+    // PDF Download
+    // ---------------------------
+    document.getElementById("downloadPdfBtn").addEventListener("click", async () => {
+      const msg = document.getElementById("actionMsg");
+      msg.textContent = "Generating PDF…";
+
+      try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: "pt", format: "letter" });
+
+        const margin = 40;
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const maxWidth = pageWidth - margin * 2;
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.text("BuiltBetter Fitness — Week 1 Plan", margin, 60);
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+
+        const wrapped = doc.splitTextToSize(planText, maxWidth);
+        let y = 90;
+
+        wrapped.forEach((line) => {
+          if (y > 740) { doc.addPage(); y = 60; }
+          doc.text(line, margin, y);
+          y += 14;
+        });
+
+        const fileName = `BuiltBetter_Week1_${goalLabel.replace(/\s+/g, "")}_${days}days.pdf`;
+        doc.save(fileName);
+
+        msg.textContent = "✅ PDF downloaded.";
+      } catch (e) {
+        msg.textContent = "❌ Could not generate PDF. Please try again.";
+      }
+    });
+
+    // ---------------------------
+    // Email Plan via Zapier
+    // ---------------------------
+    document.getElementById("emailPlanBtn").addEventListener("click", async () => {
+      const msg = document.getElementById("actionMsg");
+      msg.textContent = "Sending to your email…";
+
+      if (!email) {
+        msg.textContent = "❌ No email found. Please go back and enter your email on the form.";
+        return;
+      }
+
+      try {
+        const fd = new FormData();
+        fd.append("event_type", "plan_email");
+        fd.append("email", email);
+        fd.append("goal", goalLabel);
+        fd.append("days", String(days));
+        fd.append("experience", expRaw);
+        fd.append("equipment", equipLabel);
+        fd.append("notes", notesRaw);
+        fd.append("plan_text", planText);
+
+        const res = await fetch(ZAPIER_HOOK_URL, { method: "POST", body: fd });
+        if (!res.ok) throw new Error("Zapier send failed");
+
+        msg.textContent = "✅ Sent! Check your inbox (and spam).";
+      } catch (e) {
+        msg.textContent = "❌ Email send failed. Please try again in a moment.";
+      }
+    });
+
+    // ---------------------------
     // Countdown timer
+    // ---------------------------
     let time = 600;
     const timerEl = document.getElementById("timer");
     const interval = setInterval(() => {
